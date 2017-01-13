@@ -46,7 +46,7 @@ export default class AgentComponent extends Component<void, Props, State>
         dispatch({
             type: DetailsConstants.SHOW_DETAILS,
             payload: new Map({
-                header: this.props.agentObj.name + " " + this.props.agentObj.dynastyName,
+                header: this.props.agentObj.getFullName(),
                 details: {
                     Money: this.props.agentObj.getMoney()
                 }

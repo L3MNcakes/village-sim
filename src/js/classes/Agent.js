@@ -34,6 +34,7 @@ import Config from '../config';
  * Class imports
  **/
 import Item from './Item';
+import Building from './Building';
 
 /**
  * Component imports
@@ -50,6 +51,7 @@ import type {AgentAction} from '../actions/AgentActions';
  **/
 import AgentConstants from '../constants/AgentConstants';
 import ItemConstants from '../constants/ItemConstants';
+import JobConstants from '../constants/JobConstants';
 
 var rng = new Random(),
     randomName = (): string => {
@@ -72,6 +74,7 @@ export default class Agent {
     dynastyName: string;
     position: Victor;
     inventory: Set<Item>;
+    buildings: Set<Building>;
 
     constructor(id: string): void {
         this.id = id;
@@ -80,9 +83,12 @@ export default class Agent {
         this.name = randomName();
         this.dynastyName = randomName();
         this.position = new Victor(rng.integer(0, Config.get("SIM_WIDTH")), rng.integer(0, Config.get("SIM_HEIGHT")));
+
         this.inventory = new Set([
             new Item(ItemConstants.TYPE_CURRENCY, rng.integer(Config.get("MIN_SPAWN_CURRENCY"), Config.get("MAX_SPAWN_CURRENCY")))
         ]);
+
+        this.buildings = new Set();
 
         // Adds the newly created agent to the AgentsStore
         dispatch({
@@ -104,7 +110,7 @@ export default class Agent {
             case AgentConstants.MOVE_TO_AGENT:
                 return this.handleMoveToAgent();
             case AgentConstants.CONSTRUCT_BUILDING:
-                return; // this.handleConstructBuilding();
+                return this.handleConstructBuilding();
         }
     }
 
@@ -142,13 +148,19 @@ export default class Agent {
             case AgentConstants.CONSTRUCT_BUILDING:
                 action = {
                     type: AgentConstants.CONSTRUCT_BUILDING,
-                    payload: {}
+                    payload: {
+                        paymentOffer: rng.integer(0, this.getMoney())
+                    }
                 };
                 break;
         }
 
         // For some reason OrderedSet.add doesn't return an OrderedSet. 0_o
         this.actionQueue = new OrderedSet(this.actionQueue.add(action));
+    }
+
+    getFullName(): string {
+        return this.name + " " + this.dynastyName;
     }
 
     getMoney(): number {
@@ -196,6 +208,20 @@ export default class Agent {
             newPos = this.position.clone().add(moveVec);
 
         this.position = newPos.clone();
+    }
+
+    handleConstructBuilding(): void {
+        var action = this.actionQueue.first(),
+            jobAction = {
+                type: JobConstants.NEW_JOB,
+                payload: {
+                    type: JobConstants.TYPE_CONSTRUCT_BULDING,
+                    requestedBy: this,
+                    amountOffered: action.payload && action.payload.paymentOffer ? action.payload.paymentOffer : 0
+                }
+            };
+
+        this.actionQueue = this.actionQueue.delete(action);
     }
 
     renderComponent(): ?React.Element {

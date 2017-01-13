@@ -15,6 +15,7 @@ import React, {Component} from 'react';
  * Class imports
  **/
 import Agent from '../classes/Agent';
+import Building from '../classes/Building';
 
 /**
  * Config import
@@ -25,10 +26,12 @@ import Config from '../config';
  * Store import
  **/
 import SimStore from '../stores/SimStore';
+import BuildingsStore from '../stores/BuildingsStore';
 
 
 type State = {
-    agents: Array<Agent>
+    agents: Array<Agent>,
+    buildings: Array<Building>
 };
 
 type Props = {
@@ -38,7 +41,8 @@ type Props = {
 export default class VillageSim extends Component<void, Props, State>
 {
     state: State = {
-        agents: []
+        agents: [],
+        buildings: []
     };
 
     componentWillMount(): void {
@@ -61,7 +65,8 @@ export default class VillageSim extends Component<void, Props, State>
         }
 
         this.setState({
-            agents: agents
+            agents: agents,
+            buildings: BuildingsStore.getState().toArray()
         });
     };
 
@@ -70,9 +75,14 @@ export default class VillageSim extends Component<void, Props, State>
             return agent.renderComponent();
         });
 
+        var buildings = this.state.buildings.map(function(building) {
+            return building.renderComponent();
+        });
+
         return (
             <svg id="VillageSim" width={Config.get("SIM_WIDTH")} height={Config.get("SIM_HEIGHT")}>
                 {agents}
+                {buildings}
             </svg>
         );
     };

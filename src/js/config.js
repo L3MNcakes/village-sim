@@ -19,4 +19,6 @@ export default Map({
 
     MIN_SPAWN_CURRENCY: 100,
     MAX_SPAWN_CURRENCY: 1000,
+
+    BUILDING_WIDTH: 25,
 });

@@ -38,7 +38,7 @@ export type AgentAction = {
     } | {
         type: AgentConstants.CONSTRUCT_BUILDING,
         payload: {
-
+            paymentOffer: number
         }
     };
 

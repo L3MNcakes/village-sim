@@ -1,5 +1,5 @@
 /**
- * AgentActions.js
+ * BuildingActions.js
  *
  * @author <L3MNcakes@gmail.com>
  * @flow

@@ -10,6 +10,7 @@
  * Npm imports
  **/
 import React, {Component} from 'react';
+import {Map} from 'immutable';
 
 /**
  * Config import
@@ -41,14 +42,27 @@ export default class BuildingComponent extends Component<void, Props, State>
 {
     state: State;
 
+    handleClick(evt: Event): void {
+        dispatch({
+            type: DetailsConstants.SHOW_DETAILS,
+            payload: new Map({
+                header: this.props.buildingObj.name,
+                details: {
+                    Owner: this.props.buildingObj.owner.getFullName()
+                }
+            })
+        });
+    };
+
     render(): ?React.Element {
         return (
             <rect
                 x={this.props.buildingObj.position.x}
                 y={this.props.buildingObj.position.y}
-                width={10}
-                height={10}
+                width={Config.get("BUILDING_WIDTH")}
+                height={Config.get("BUILDING_WIDTH")}
+                onClick={this.handleClick.bind(this)}
             />
         );
-    }
+    };
 }
