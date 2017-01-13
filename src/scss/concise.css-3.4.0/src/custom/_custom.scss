@@ -1,0 +1,38 @@
+//
+// BrandonSoucie-Styles
+// =============================================================================
+html {
+    body {
+        background-color: getColor('background', 'dark');
+
+        #App {
+            width: 100%;
+            text-align: center;
+
+            h1, h2, h3, h4, h5, h6 {
+                color: getColor('text', 'ui');
+            }
+
+            svg {
+                margin: 2em auto;
+                background-color: getColor('background', 'light');
+
+                .agent {
+                    cursor: pointer;
+                    fill: #0000FF;
+                }
+            }
+
+            #DetailViewer {
+                width: 1600px;
+                margin: 0 auto;
+                text-align: left;
+                color: getColor('text', 'ui');
+
+                .detail-label {
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+}
